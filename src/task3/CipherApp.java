@@ -40,22 +40,26 @@ class DecryptFilterReader extends FilterReader {
 public class CipherApp {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         System.out.print("Введіть текст для шифрування: ");
         String text = scanner.nextLine();
 
-        System.out.print("Введіть числовий ключ шифрування (наприклад, 5): ");
-        int key = Integer.parseInt(scanner.nextLine());
-        String fileName = "encrypted.txt";
+        System.out.print("Введіть ключовий символ (наприклад, 'K'): ");
+        String keyInput = scanner.nextLine();
+        int key = keyInput.isEmpty() ? 1 : keyInput.charAt(0);
 
-        // Шифрування
+        System.out.print("Введіть шлях та ім'я файлу для збереження (наприклад, encrypted.txt): ");
+        String fileName = scanner.nextLine();
+
+        // c. Використання FilterWriter для шифрування
         try (EncryptFilterWriter efw = new EncryptFilterWriter(new FileWriter(fileName), key)) {
             efw.write(text);
             System.out.println("Зашифровано у файл: " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Помилка при записі у файл: " + e.getMessage());
         }
 
-        // Дешифрування
+        // c. Використання FilterReader для дешифрування
         try (DecryptFilterReader dfr = new DecryptFilterReader(new FileReader(fileName), key)) {
             StringBuilder decrypted = new StringBuilder();
             int c;
@@ -64,7 +68,7 @@ public class CipherApp {
             }
             System.out.println("Розшифрований текст: " + decrypted);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Помилка при читанні з файлу: " + e.getMessage());
         }
     }
 }
